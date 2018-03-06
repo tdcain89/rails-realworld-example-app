@@ -1,0 +1,36 @@
+version: '2'
+
+services:
+  postgres:
+    image: 'postgres:9.6-alpine'
+    environment:
+      POSTGRES_USER: 'rz_test'
+      POSTGRES_PASSWORD: 'revz1ll4'
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+
+  website:
+    depends_on:
+      - 'postgres'
+    build: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - '.:/app'
+    env_file:
+      - '.env'
+
+  react-app:
+    container_name: react-app
+    build:
+      context: ./react-app
+      dockerfile: /Users/tcain/Documents/forks/rails-realworld-example-app/react-app/Dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      - NODE_ENV=development
+
+volumes:
+  postgres:
